@@ -1,4 +1,4 @@
-package com.srp.config.jpa;
+package com.srp.configuration.jpa;
 
 import java.io.Serializable;
 

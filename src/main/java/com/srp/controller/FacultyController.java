@@ -6,25 +6,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.srp.data.dto.StudentDTO;
-import com.srp.service.StudentService;
+import com.srp.data.dto.FacultyDTO;
+import com.srp.service.FacultyService;
 
 import lombok.extern.slf4j.Slf4j;
 
-@RequestMapping("api/rest/srp/student")
+@RequestMapping("api/rest/srp/faculty")
 @RestController
 @Slf4j
-public class StudentController {
-
-	@Autowired
-	StudentService studentService;
+public class FacultyController {
 	
-	@PostMapping("/registerStudent")
-	public StudentDTO addUser(@RequestBody StudentDTO newUser) {
-		log.info("Student to be added : {}" , newUser);
+	@Autowired
+	FacultyService facultyService;
+	
+	@PostMapping("/registerFaculty")
+	public FacultyDTO addUser(@RequestBody FacultyDTO newUser) {
+		log.info("Faculty to be added : {}" , newUser);
 		
-		newUser = studentService.saveUser(newUser);
-		log.info("Student added : {}" , newUser);
+		newUser = facultyService.saveUser(newUser);
+		log.info("Faculty added : {}" , newUser);
 		return newUser;
 	}
 }

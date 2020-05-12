@@ -1,8 +1,13 @@
 package com.srp.service;
 
+import org.springframework.stereotype.Service;
+
 import com.srp.data.dto.StudentDTO;
 import com.srp.data.entity.Student;
 
-public interface StudentService extends BaseService<StudentDTO, Student, Long> {
+@Service
+public interface StudentService extends BaseService<StudentDTO, Student, String> {
+
+	StudentDTO saveUser(StudentDTO newUser);
 
 }

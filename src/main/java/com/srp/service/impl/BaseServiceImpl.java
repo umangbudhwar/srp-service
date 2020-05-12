@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.springframework.data.repository.Repository;
 
-import com.srp.config.jpa.SrpRepository;
+import com.srp.configuration.jpa.SrpRepository;
 import com.srp.service.BaseService;
 
 import ma.glasnost.orika.MapperFacade;

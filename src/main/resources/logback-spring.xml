@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration>
+	<include resource = "org/springframework/boot/logging/logback/defaults.xml"/>
+	
+	<appender name = "CONSOLE" class = "ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${CONSOLE_LOG_PATTERN}</pattern>
+			<charset>utf8</charset>
+		</encoder>
+	</appender>
+	
+	<appender name = "ROLLING" class = "ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>target/logs/srp-service/srp-service.log</file>	  
+		<rollingPolicy class = "ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- roll over daily -->
+			<fileNamePattern>target/archived-logs/srp-service-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>100MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} %p %C{1.} [%t] %m%n</pattern>
+			<charset>utf8</charset>
+		</encoder>	  
+	</appender>
+	
+	<root level = "Info">
+		<appender-ref ref = "ROLLING" />
+		<appender-ref ref = "CONSOLE" />
+	</root>
+	
+</configuration>
