@@ -3,14 +3,19 @@ package com.srp.data.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import lombok.Data;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Data
 public class User {
+	
+	@Id
+	@Column(name = "user_name")
+	private String userName;
 
 	@Column(name = "first_name")
 	private String firstName;
@@ -30,8 +35,10 @@ public class User {
 	@Column(name = "is_active")
 	private boolean isActive;
 
-	@Id
-	@Column(name = "user_name")
-	private String userName;
+	@PrePersist
+	public void prePersist() {
+		
+		this.isActive = true;
+	}
 
 }

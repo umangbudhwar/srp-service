@@ -9,7 +9,7 @@ import com.srp.data.entity.Faculty;
 @Service
 public interface FacultyService extends BaseService<FacultyDTO, Faculty, String> {
 
-	FacultyDTO saveUser(FacultyDTO newUser);
+	FacultyDTO registerFaculty(FacultyDTO newUser);
 
 	Faculty findByUserName(String userName);
 

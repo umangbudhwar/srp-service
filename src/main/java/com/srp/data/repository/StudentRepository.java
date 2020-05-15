@@ -8,4 +8,6 @@ import com.srp.data.entity.Student;
 @Repository
 public interface StudentRepository extends SrpRepository<Student, String> {
 
+	public int countByFirstName(String firstName);
+
 }

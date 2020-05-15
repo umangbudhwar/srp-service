@@ -27,46 +27,46 @@ public class Student {
 	private String password;
 
 	@Column(name = "first_name")
-	private String first_name;
+	private String firstName;
 
 	@Column(name = "last_name")
-	private String last_name;
+	private String lastName;
 
 	@Column(name = "email_id")
-	private String email_id;
+	private String emailId;
 
 	@Column(name = "date_of_birth")
-	private Date date_of_birth;
+	private Date DOB;
 
 	@Column(name = "age")
 	private Integer age;
 
 	@Column(name = "fee_receipt_number")
-	private Long fee_receipt_number;
+	private Long feeReceiptNumber;
 
 	@Column(name = "enrollment_number")
-	private String enrollment_number;
+	private String enrollmentNumber;
 
 	@Column(name = "year_id")
-	private Integer year_id;
+	private Integer yearId;
 
 	@Column(name = "college_year")
-	private Integer college_year;
+	private Integer collegeYear;
 
 	@Column(name = "mother_name")
-	private String mother_name;
+	private String motherName;
 
 	@Column(name = "father_name")
-	private String father_name;
+	private String fatherName;
 
 	@Column(name = "whatsapp_number")
-	private Long whatsapp_number;
+	private Long whatsappNumber;
 
 	@Column(name = "alternate_phone_number")
-	private Long alternate_phone_number;
+	private Long alternatePhoneNumber;
 
 	@Column(name = "guardian_phone_number")
-	private Long guardian_phone_number;
+	private Long guardianPhoneNumber;
 
 	@Column(name = "gender")
 	private String gender;
@@ -75,16 +75,16 @@ public class Student {
 	private String category;
 
 	@Column(name = "stream_id")
-	private Integer stream_id;
+	private Integer streamId;
 
-	@Column(name = "subject_id")
-	private Integer[] subject_id;
+	@Column(name = "subjectId")
+	private Integer[] subjectId;
 
 	@Column(name = "group_division")
-	private String group_division;
+	private String groupDivision;
 
 	@Column(name = "student_code")
-	private String student_code;
+	private String studentCode;
 	
 	@Column(name = "created_date")
 	private Date createdDate;
@@ -112,7 +112,7 @@ public class Student {
 		this.modifiedBy = SrpUtility.getCurrentLoggedInUser();
 		this.isActive = true;
 		this.role = "ROLE_STUDENT";
-		this.year_id = LocalDate.now().getYear();
+		this.yearId = LocalDate.now().getYear();
 	}
 
 	@PreUpdate

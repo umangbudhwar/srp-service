@@ -1,6 +1,7 @@
 package com.srp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +21,10 @@ public class FacultyController {
 	FacultyService facultyService;
 	
 	@PostMapping("/registerFaculty")
-	public FacultyDTO addUser(@RequestBody FacultyDTO newUser) {
-		log.info("Faculty to be added : {}" , newUser);
-		
-		newUser = facultyService.saveUser(newUser);
-		log.info("Faculty added : {}" , newUser);
-		return newUser;
+	public ResponseEntity<FacultyDTO> registerFaculty(@RequestBody FacultyDTO facultyDto) {
+		log.info("Faculty to be added : {}" , facultyDto);
+		facultyDto = facultyService.registerFaculty(facultyDto);
+		log.info("Faculty added : {}" , facultyDto);
+		return ResponseEntity.ok(facultyDto);
 	}
 }

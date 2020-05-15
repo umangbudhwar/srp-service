@@ -8,6 +8,6 @@ import com.srp.data.entity.Student;
 @Service
 public interface StudentService extends BaseService<StudentDTO, Student, String> {
 
-	StudentDTO saveUser(StudentDTO newUser);
+	StudentDTO registerStudent(StudentDTO newUser);
 
 }

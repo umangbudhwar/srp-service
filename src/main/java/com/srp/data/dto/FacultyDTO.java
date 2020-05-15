@@ -13,4 +13,5 @@ public class FacultyDTO {
 	private String userName;
 	private Long contactNumber;
 	private Integer adminOTP;
+	private Long streamId;
 }

@@ -1,9 +1,6 @@
 package com.srp.data.dto;
 
 import java.io.Serializable;
-import java.util.Collection;
-
-import org.springframework.security.core.GrantedAuthority;
 
 import lombok.Data;
 

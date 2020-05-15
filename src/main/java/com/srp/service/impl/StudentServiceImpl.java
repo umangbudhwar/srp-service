@@ -1,5 +1,7 @@
 package com.srp.service.impl;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,7 +12,9 @@ import com.srp.data.entity.Student;
 import com.srp.data.entity.User;
 import com.srp.data.repository.StudentRepository;
 import com.srp.data.repository.UserRepository;
+import com.srp.service.StreamsService;
 import com.srp.service.StudentService;
+import com.srp.service.SubjectService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,22 +36,55 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
 	@Autowired
 	UserRepository userRepository;
 	
+	@Autowired
+	StreamsService  streamService;
+	
+	@Autowired
+	SubjectService  subjectService;
+	
 	@Override
-	public StudentDTO saveUser(StudentDTO newUser) {
+	public StudentDTO registerStudent(StudentDTO newUser) {
 		log.info("In Student service Impl");
-		Student student = getMapper().map(newUser, Student.class);
-		student.setPassword(passwordEncoder.encode(student.getPassword()));
-		student.setStudent_code(student.getYear_id()+student.getFirst_name()+student.getCollege_year());
-		student = studentRepository.save(student);
+		Student student = null;
+		int firstNameUniqueCount = 0;
+		Integer yearId = (LocalDate.now().getYear())%100;
 		
-		log.info("User saved in Student.");
-		
-		User user = getMapper().map(newUser, User.class);
-		user.setRole("ROLE_STUDENT");
-		user = userRepository.save(user);
-		
-		log.info("User saved in User table.");
-		
+		try {
+			
+			if(newUser.getStudentOTP() == 456789)
+			{
+				student = getMapper().map(newUser, Student.class);
+				student.setPassword(passwordEncoder.encode(student.getPassword()));
+				
+				firstNameUniqueCount = studentRepository.countByFirstName(student.getFirstName());
+				if(firstNameUniqueCount <= 1) {
+					
+					// setting student code without Father's name
+					student.setStudentCode(yearId+newUser.getFirstName()+newUser.getCollegeYear());
+				}
+				else {
+					// setting student code with Father's name
+					student.setStudentCode(yearId+newUser.getFirstName()+newUser.getFatherName()+newUser.getCollegeYear());
+				}
+				
+//				student.setStreamId(streamService.getStreamIdFromStreamName(newUser.getStreamName()));
+				
+				student = studentRepository.save(student);
+				
+				log.info("User saved in Student.");
+				
+				User user = getMapper().map(newUser, User.class);
+				user.setRole("ROLE_STUDENT");
+				user = userRepository.save(user);
+				
+				log.info("User saved in User table.");
+			}
+			
+		}
+		catch (Exception e) {
+			
+			log.error("Exception in Student Service Impl: saveUser(): {} " , e.getMessage());
+		}
 		return getMapper().map(student, StudentDTO.class);
 	}
 

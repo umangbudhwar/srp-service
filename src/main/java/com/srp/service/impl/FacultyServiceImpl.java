@@ -35,7 +35,7 @@ public class FacultyServiceImpl extends BaseServiceImpl<FacultyDTO, Faculty, Str
 	}
 	
 	@Override
-	public FacultyDTO saveUser(FacultyDTO newUser) {
+	public FacultyDTO registerFaculty(FacultyDTO newUser) {
 		
 		log.info("In FacultyServiceImpl/saveUser(). ");
 		Faculty faculty = null;
@@ -51,6 +51,7 @@ public class FacultyServiceImpl extends BaseServiceImpl<FacultyDTO, Faculty, Str
 				
 				User user = getMapper().map(newUser, User.class);
 				user.setRole("ROLE_FACULTY");
+				user.setPassword(passwordEncoder.encode(user.getPassword()));
 				user = userRepository.save(user);
 				
 				log.info("User saved in User table.");
