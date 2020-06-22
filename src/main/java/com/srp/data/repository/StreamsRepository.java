@@ -6,7 +6,9 @@ import com.srp.configuration.jpa.SrpRepository;
 import com.srp.data.entity.Streams;
 
 @Repository
-public interface StreamsRepository extends SrpRepository<Streams, Integer> {
+public interface StreamsRepository extends SrpRepository<Streams, Long> {
+
+	Streams findByStreamId(Long streamId);
 
 //	Streams findByStreamName(String streamName);
 

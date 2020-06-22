@@ -7,6 +7,6 @@ import com.srp.data.entity.Subject;
 
 @Repository
 
-public interface SubjectRepository extends SrpRepository<Subject, Integer> {
+public interface SubjectRepository extends SrpRepository<Subject, Long> {
 
 }

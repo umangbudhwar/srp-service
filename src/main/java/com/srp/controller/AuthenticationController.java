@@ -38,12 +38,12 @@ public class AuthenticationController {
 		AuthenticationResponseDTO authenticationResponseDTO;
 		final MyUserDetails myUserDetails = (MyUserDetails)userDetailsService.loadUserByUsername(authenticationRequest.getUserName());
 		try {
-			log.info("Authenticating User :");
+			// log.info("Authenticating User :");
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 					authenticationRequest.getUserName(), authenticationRequest.getPassword()));
-			log.info("User Authenticated :");
+			// log.info("User Authenticated :");
 		} catch (Exception e) {
-			log.error("{}", e);
+			// log.error("{}", e);
 			throw new Exception("Incorrect Username or Passowrd", e);
 		}
 

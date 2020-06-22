@@ -1,8 +1,11 @@
 package com.srp.data.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
 import lombok.Data;
 
 @Data
+@JsonAutoDetect
 public class FacultyDTO {
 
 	//private Long Faculty_id;
@@ -12,6 +15,6 @@ public class FacultyDTO {
 	private String password;
 	private String userName;
 	private Long contactNumber;
-	private Integer adminOTP;
+	private Long adminOTP;
 	private Long streamId;
 }

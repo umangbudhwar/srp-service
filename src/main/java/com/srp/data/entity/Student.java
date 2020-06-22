@@ -10,13 +10,18 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+
 import com.srp.utility.SrpUtility;
+import com.vladmihalcea.hibernate.type.array.LongArrayType;
 
 import lombok.Data;
 
 @Entity
 @Table(name = "student")
 @Data
+@TypeDef(name = "long-array", typeClass = LongArrayType.class)
 public class Student {
 
 	@Id
@@ -36,10 +41,10 @@ public class Student {
 	private String emailId;
 
 	@Column(name = "date_of_birth")
-	private Date DOB;
+	private Date dateOfBirth;
 
 	@Column(name = "age")
-	private Integer age;
+	private Long age;
 
 	@Column(name = "fee_receipt_number")
 	private Long feeReceiptNumber;
@@ -51,7 +56,7 @@ public class Student {
 	private Integer yearId;
 
 	@Column(name = "college_year")
-	private Integer collegeYear;
+	private Long collegeYear;
 
 	@Column(name = "mother_name")
 	private String motherName;
@@ -75,40 +80,37 @@ public class Student {
 	private String category;
 
 	@Column(name = "stream_id")
-	private Integer streamId;
+	private Long streamId;
 
-	@Column(name = "subjectId")
-	private Integer[] subjectId;
+	@Type(type="long-array")
+	@Column(name = "subjectId",columnDefinition = "bigint[]")
+	private Long[] subjectId;
 
 	@Column(name = "group_division")
 	private String groupDivision;
 
 	@Column(name = "student_code")
 	private String studentCode;
-	
+
 	@Column(name = "created_date")
 	private Date createdDate;
-	
-	@Column(name = "created_by")
-	private Date createdBy;
 
 	@Column(name = "modified_date")
 	private Date modifiedDate;
 
 	@Column(name = "modified_by")
 	private String modifiedBy;
-	
+
 	@Column(name = "is_active")
 	private boolean isActive;
-	
+
 	@Column(name = "role")
 	private String role;
-	
+
 	@PrePersist
 	public void prePersist() {
 		this.createdDate = new Date(System.currentTimeMillis());
 		this.modifiedDate = new Date(System.currentTimeMillis());
-		this.modifiedBy = SrpUtility.getCurrentLoggedInUser();
 		this.modifiedBy = SrpUtility.getCurrentLoggedInUser();
 		this.isActive = true;
 		this.role = "ROLE_STUDENT";

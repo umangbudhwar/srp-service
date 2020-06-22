@@ -15,19 +15,19 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class SubjectServiceImpl extends BaseServiceImpl<SubjectDTO, Subject, Integer> implements SubjectService {
+public class SubjectServiceImpl extends BaseServiceImpl<SubjectDTO, Subject, Long> implements SubjectService {
 
 	@Autowired
 	SubjectRepository subjectRepository;
 	
-	public SubjectServiceImpl(SrpRepository<Subject, Integer> repository) {
+	public SubjectServiceImpl(SrpRepository<Subject, Long> repository) {
 		super(repository);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public List<SubjectDTO> getSubjects() {
-		log.info("In Subject Service: getSubjects()");
+		// log.info("In Subject Service: getSubjects()");
 		List<SubjectDTO> subjectDtoList = null;
 
 		try {
@@ -37,7 +37,7 @@ public class SubjectServiceImpl extends BaseServiceImpl<SubjectDTO, Subject, Int
 
 		} catch (Exception e) {
 
-			log.error("Exception in Stream Service: getStreams {}", e.getMessage());
+			// log.error("Exception in Stream Service: getStreams {}", e.getMessage());
 		}
 
 		return subjectDtoList;

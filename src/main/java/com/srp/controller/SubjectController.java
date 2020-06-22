@@ -23,7 +23,7 @@ public class SubjectController {
 	
 	@GetMapping("/getSubjects")
 	public ResponseEntity<List<SubjectDTO>> getSubjects() {
-		log.info("In Subject Controller: getSubjects()");
+		// log.info("In Subject Controller: getSubjects()");
 		List<SubjectDTO> subjectDto = subjectService.getSubjects();
 
 		return ResponseEntity.ok(subjectDto);

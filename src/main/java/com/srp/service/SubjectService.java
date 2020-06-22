@@ -8,7 +8,7 @@ import com.srp.data.dto.SubjectDTO;
 import com.srp.data.entity.Subject;
 
 @Service
-public interface SubjectService extends BaseService<SubjectDTO, Subject, Integer> {
+public interface SubjectService extends BaseService<SubjectDTO, Subject, Long> {
 
 	List<SubjectDTO> getSubjects();
 

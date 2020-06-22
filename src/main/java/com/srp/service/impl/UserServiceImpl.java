@@ -27,7 +27,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, String> impl
 
 	@Override
 	public User findByUserName(String userName) {
-		log.info("In User service:");
+		// log.info("In User service:");
 		Optional<User> r = userRepository.findById(userName);
 		return r.get();
 	}

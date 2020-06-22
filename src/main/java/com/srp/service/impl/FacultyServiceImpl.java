@@ -25,7 +25,7 @@ public class FacultyServiceImpl extends BaseServiceImpl<FacultyDTO, Faculty, Str
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	FacultyRepository FacultyRepository;
+	FacultyRepository facultyRepository;
 	
 	@Autowired
 	UserRepository userRepository;
@@ -37,7 +37,7 @@ public class FacultyServiceImpl extends BaseServiceImpl<FacultyDTO, Faculty, Str
 	@Override
 	public FacultyDTO registerFaculty(FacultyDTO newUser) {
 		
-		log.info("In FacultyServiceImpl/saveUser(). ");
+		// log.info("In FacultyServiceImpl/saveUser(). ");
 		Faculty faculty = null;
 		
 		try {
@@ -45,19 +45,19 @@ public class FacultyServiceImpl extends BaseServiceImpl<FacultyDTO, Faculty, Str
 			if(newUser.getAdminOTP() == 123456) {
 				faculty = getMapper().map(newUser, Faculty.class);
 				faculty.setPassword(passwordEncoder.encode(faculty.getPassword()));
-				faculty = FacultyRepository.save(faculty);
+				faculty = facultyRepository.save(faculty);
 				
-				log.info("User saved in Faculty.");
+				// log.info("User saved in Faculty.");
 				
 				User user = getMapper().map(newUser, User.class);
 				user.setRole("ROLE_FACULTY");
 				user.setPassword(passwordEncoder.encode(user.getPassword()));
 				user = userRepository.save(user);
 				
-				log.info("User saved in User table.");
+				// log.info("User saved in User table.");
 			}
 		}catch (Exception e) {
-			log.error("Exception in Faculty Service Impl: saveUser(): {} " , e.getMessage());
+			// log.error("Exception in Faculty Service Impl: saveUser(): {} " , e.getMessage());
 		}
 		
 		return getMapper().map(faculty, FacultyDTO.class);
@@ -65,14 +65,29 @@ public class FacultyServiceImpl extends BaseServiceImpl<FacultyDTO, Faculty, Str
 
 	@Override
 	public Faculty findByUserName(String userName) {
-		log.info("In Faculty service:");
+		// log.info("In Faculty service findByUserName() {}:", userName);
 		Optional<Faculty> r = null;
 		try {
-			r = FacultyRepository.findById(userName);
+			r = facultyRepository.findById(userName);
 		}catch (Exception e) {
-			log.error("Exception in Faculty Service Impl: findByUserName (): {} " , e.getMessage());
+			// log.error("Exception in Faculty Service Impl: findByUserName (): {} " , e.getMessage());
 		}
 		return r.get();
 	}
+	 @Override
+	    public boolean checkUserName(String userName) {
+	        
+	        // log.info("in check username {} " , userName);
+	        boolean userExistFlag = false;
+	        
+	        try {
+	            userExistFlag = userRepository.existsUserByUserNameIgnoreCase(userName);
+	        }catch (Exception e) {
+	            // log.error("Exception in checkUserName Service Impl: {} ", e.getMessage());
+	            e.printStackTrace();
+	            userExistFlag = false;
+	        }
+	        return userExistFlag;
+	    }
 
 }

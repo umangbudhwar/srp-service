@@ -28,61 +28,73 @@ import lombok.extern.slf4j.Slf4j;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	MyUserDetailsService userDetailsService;
+    @Autowired
+    MyUserDetailsService userDetailsService;
 
-	@Autowired
-	JwtRequestFilter jwtRequestFilter;
+    @Autowired
+    JwtRequestFilter jwtRequestFilter;
 
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		// configure AuthenticationManager so that it knows from where to load // user
-		// for matching credentials // Use BCryptPasswordEncoder
-		auth.userDetailsService(userDetailsService).passwordEncoder(getPasswordEncoder());
-	}
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        // configure AuthenticationManager so that it knows from where to load // user
+        // for matching credentials // Use BCryptPasswordEncoder
+        auth.userDetailsService(userDetailsService)
+            .passwordEncoder(getPasswordEncoder());
+    }
 
-	/* For Authentication */
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		log.info("in authentication configure");
-		auth.userDetailsService(userDetailsService).passwordEncoder(getPasswordEncoder());
-	}
+    /* For Authentication */
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // log.info("in authentication configure");
+        auth.userDetailsService(userDetailsService)
+            .passwordEncoder(getPasswordEncoder());
+    }
 
-	/* For Authorization */
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		log.info("in authorization configure");
-		http.cors().and().csrf().disable().authorizeRequests()
-				.antMatchers("/**/authenticate","/**/registerFaculty","/**/registerStudent",
-						"/**/getSubjects","/**/getStreams").permitAll()
-				 .antMatchers("/**/home").hasAnyRole("FACULTY","STUDENT","ADMIN")
-				// .antMatchers("/user").hasAnyRole("USER", "ADMIN")
-				.anyRequest().authenticated().and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-	}
+    /* For Authorization */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        // log.info("in authorization configure");
+        http.cors()
+            .and()
+            .csrf()
+            .disable()
+            .authorizeRequests()
+            .antMatchers("/**/home", "/**/getStudentForReportGeneration/**", "/**/updateStudents",
+                "/**/fetchStudent/**","/updateBatchGroupCode","/**/loadCountOfStudentYearWise",
+                "/**/fetchYearWiseStudentRecords/**")
+            .hasAnyRole("FACULTY", "ADMIN")
+            .antMatchers("/**/authenticate", "/**/registerFaculty", "/**/registerStudent", "/**/getSubjects", 
+                "/**/getStreams","/**/findIfUserNameExist/**","/**/findIfFacultyUserNameExist/**")
+            .permitAll()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+    }
 
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration corsConfiguration = new CorsConfiguration();
-		corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
-		corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
-		corsConfiguration.setExposedHeaders(Arrays.asList("x-auth-token"));
-		corsConfiguration.setAllowedMethods(Arrays.asList("*"));
-		UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-		urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-		return urlBasedCorsConfigurationSource;
-	}
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setExposedHeaders(Arrays.asList("x-auth-token"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("*"));
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        return urlBasedCorsConfigurationSource;
+    }
 
-	@Override
-	@Bean
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
-	}
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
-	@Bean
-	public PasswordEncoder getPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 }

@@ -23,7 +23,7 @@ public class StreamsController {
 
 	@GetMapping("/getStreams")
 	public ResponseEntity<List<StreamsDTO>> getStreams() {
-		log.info("In Stream Controller: getStreams()");
+		// log.info("In Stream Controller: getStreams()");
 		List<StreamsDTO> streamDto = streamsService.getStreams();
 
 		return ResponseEntity.ok(streamDto);

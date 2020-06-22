@@ -2,9 +2,12 @@ package com.srp.data.dto;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
 import lombok.Data;
 
 @Data
+@JsonAutoDetect
 public class AuthenticationResponseDTO implements Serializable {
 	
 	/* Output structure for jwt based authentication method */

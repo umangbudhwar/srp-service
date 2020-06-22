@@ -15,12 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class StreamsServiceImpl extends BaseServiceImpl<StreamsDTO, Streams, Integer> implements StreamsService {
+public class StreamsServiceImpl extends BaseServiceImpl<StreamsDTO, Streams, Long> implements StreamsService {
 
 	@Autowired
 	StreamsRepository streamRepository;
 
-	public StreamsServiceImpl(SrpRepository<Streams, Integer> repository) {
+	public StreamsServiceImpl(SrpRepository<Streams, Long> repository) {
 		super(repository);
 		// TODO Auto-generated constructor stub
 	}
@@ -28,7 +28,7 @@ public class StreamsServiceImpl extends BaseServiceImpl<StreamsDTO, Streams, Int
 	@Override
 	public List<StreamsDTO> getStreams() {
 
-		log.info("In Stream Service: getStreams()");
+		// log.info("In Stream Service: getStreams()");
 		List<StreamsDTO> streamDtoList = null;
 
 		try {
@@ -38,16 +38,30 @@ public class StreamsServiceImpl extends BaseServiceImpl<StreamsDTO, Streams, Int
 
 		} catch (Exception e) {
 
-			log.error("Exception in Stream Service: getStreams {}", e.getMessage());
+			// log.error("Exception in Stream Service: getStreams {}", e.getMessage());
 		}
 
 		return streamDtoList;
 	}
 
+	@Override
+	public Streams findById(Long streamId) {
+		
+		Streams stream = null;
+		try {
+			
+			stream = streamRepository.findByStreamId(streamId);
+			
+		}catch (Exception e) {
+			// log.error("Exception in Stream Service: findById {}", e.getMessage());
+		}
+		return stream;
+	}
+
 	/*
-	 * @Override public Integer getStreamIdFromStreamName(String streamName) {
+	 * @Override public Long getStreamIdFromStreamName(String streamName) {
 	 * 
-	 * log.info("In Stream Service: getStreamIdFromStreamName {} ", streamName);
+	 * // log.info("In Stream Service: getStreamIdFromStreamName {} ", streamName);
 	 * 
 	 * int streamId =0; Streams streamObj = new Streams();
 	 * 
@@ -58,7 +72,7 @@ public class StreamsServiceImpl extends BaseServiceImpl<StreamsDTO, Streams, Int
 	 * 
 	 * }catch (Exception e) {
 	 * 
-	 * log.error("Exception in Stream Service: getStreamIdFromStreamName {}",
+	 * // log.error("Exception in Stream Service: getStreamIdFromStreamName {}",
 	 * e.getMessage()); }
 	 * 
 	 * return streamId; }

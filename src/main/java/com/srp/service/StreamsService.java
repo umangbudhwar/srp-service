@@ -9,10 +9,12 @@ import com.srp.data.entity.Streams;
 
 
 @Service
-public interface StreamsService extends BaseService<StreamsDTO, Streams, Integer> {
+public interface StreamsService extends BaseService<StreamsDTO, Streams, Long> {
 
 	List<StreamsDTO> getStreams();
 
-	//Integer getStreamIdFromStreamName(String streamName);
+	Streams findById(Long id);
+
+	//Long getStreamIdFromStreamName(String streamName);
 
 }

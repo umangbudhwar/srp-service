@@ -23,11 +23,11 @@ public class MyUserDetailsService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 			
-		log.info("in MyUserDetailsService --> loadUserByUsername "); 
+		// log.info("in MyUserDetailsService --> loadUserByUsername "); 
 		User user = userService.findByUserName(userName);
 		Optional<User> u = Optional.of(user);
 		
-		log.info("Id {}",user.toString());
+		// log.info("Id {}",user.toString());
 		u.orElseThrow(()->new UsernameNotFoundException("Not found : " + userName)); 
 		
 		return u.map(MyUserDetails :: new).get();

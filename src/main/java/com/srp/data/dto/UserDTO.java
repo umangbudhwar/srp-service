@@ -1,8 +1,11 @@
 package com.srp.data.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
 import lombok.Data;
 
 @Data
+@JsonAutoDetect
 public class UserDTO {
 
 	private String userName;

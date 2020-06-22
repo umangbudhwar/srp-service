@@ -1,12 +1,15 @@
 package com.srp.data.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
 import lombok.Data;
 
 @Data
+@JsonAutoDetect
 public class SubjectDTO {
 	
-	private Integer subjectId;
+	private Long subjectId;
 	private String subjectName;
-	private Integer streamId;
+	private Long streamId;
 	
 }

@@ -11,6 +11,8 @@ public interface FacultyRepository extends SrpRepository<Faculty, String>{
 
 	FacultyDTO save(FacultyDTO newUser);
 
+	public boolean existsFacultyByUserNameIgnoreCase(String userName);
+
 //	Faculty findByUserName(String userName);
 
 }

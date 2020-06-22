@@ -7,5 +7,7 @@ import com.srp.data.entity.User;
 
 @Repository
 public interface UserRepository extends SrpRepository<User, String> {
+    
+    public boolean existsUserByUserNameIgnoreCase(String userName);
 
 }
