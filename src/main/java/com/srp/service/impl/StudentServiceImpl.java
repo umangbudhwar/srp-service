@@ -61,40 +61,47 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
     @Override
     public StudentDTO registerStudent(StudentDTO newUser) {
         // log.info("In Student service Impl");
+
         Student student = null;
         int firstNameUniqueCount = 0;
         Integer yearId = (LocalDate.now()
             .getYear()) % 100;
 
         try {
-
-            if (newUser.getStudentOTP() == 456789) {
+            student = studentRepository.findById(newUser.getUserName()).get();
+            if (student != null) {
                 student = getMapper().map(newUser, Student.class);
-                student.setPassword(passwordEncoder.encode(student.getPassword()));
-                firstNameUniqueCount = studentRepository.countByFirstName(student.getFirstName());
-                String studentCodeFirstName = newUser.getFirstName()
-                    .toUpperCase();
-                String studentCodeFatherName = newUser.getFatherName()
-                    .toUpperCase();
-
-                if (firstNameUniqueCount <= 1) {
-
-                    // setting student code without Father's name
-                    student.setStudentCode(yearId + studentCodeFirstName + newUser.getCollegeYear());
-                } else {
-                    // setting student code with Father's name
-                    student.setStudentCode(yearId + studentCodeFirstName + studentCodeFatherName + newUser.getCollegeYear());
-                }
-
+                student.setVerified(true);
                 student = studentRepository.save(student);
+            } else {
+                if (newUser.getStudentOTP() == 456789) {
+                    student = getMapper().map(newUser, Student.class);
+                    student.setPassword(passwordEncoder.encode(student.getPassword()));
+                    firstNameUniqueCount = studentRepository.countByFirstName(student.getFirstName());
+                    String studentCodeFirstName = newUser.getFirstName()
+                        .toUpperCase();
+                    String studentCodeFatherName = newUser.getFatherName()
+                        .toUpperCase();
 
-                // log.info("User saved in Student.");
+                    if (firstNameUniqueCount <= 1) {
 
-                User user = getMapper().map(newUser, User.class);
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-                user.setRole("ROLE_STUDENT");
-                user = userRepository.save(user);
-                // log.info("User saved in User table.");
+                        // setting student code without Father's name
+                        student.setStudentCode(yearId + studentCodeFirstName + newUser.getCollegeYear());
+                    } else {
+                        // setting student code with Father's name
+                        student.setStudentCode(yearId + studentCodeFirstName + studentCodeFatherName + newUser.getCollegeYear());
+                    }
+
+                    student = studentRepository.save(student);
+
+                    // log.info("User saved in Student.");
+
+                    User user = getMapper().map(newUser, User.class);
+                    user.setPassword(passwordEncoder.encode(user.getPassword()));
+                    user.setRole("ROLE_STUDENT");
+                    user = userRepository.save(user);
+                    // log.info("User saved in User table.");
+                }
             }
 
         } catch (Exception e) {
@@ -139,6 +146,10 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
                     studentDto.setPassword(null);
                 });
 
+            studentDTOList.stream()
+                .filter(student -> student.isVerified())
+                .collect(Collectors.toList());
+
             // log.info("{}", studentDTOList);
         } catch (Exception e) {
             // log.error("Exception in getStudentForReportGeneration Service Impl: {} ", e.getMessage());
@@ -157,6 +168,9 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
 
         try {
             studentList = studentRepository.findAllStudentsByUserNameOrFirstNameOrLastNameOrEmail(userName);
+            studentList.stream()
+                .filter(student -> student.isVerified())
+                .collect(Collectors.toList());
             // log.info("student object {} ", studentList);
 
         } catch (Exception e) {
@@ -215,9 +229,6 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
             for (Object[] object : studentDtoObj) {
                 loadCountOfStudentYearWiseMap.put(((BigInteger) object[0]).longValue(), ((BigInteger) object[1]).longValue());
             }
-
-            /*loadCountOfStudentYearWiseMap = studentDtoObj.stream()
-                .collect(Collectors.toMap());*/
             // log.info("loadCountOfStudentYearWiseMap {}", loadCountOfStudentYearWiseMap);
 
         } catch (Exception e) {
@@ -236,6 +247,9 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
         try {
 
             studentList = studentRepository.findByCollegeYear(year);
+            studentList.stream()
+                .filter(student -> student.isVerified())
+                .collect(Collectors.toList());
             // log.info("fetchYearWiseStudentRecords list size {}", studentList.size());
         } catch (Exception e) {
             // log.error("Exception in fetchYearWiseStudentRecords Service Impl: {} ", e.getMessage());
@@ -247,7 +261,7 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
     }
 
     @Override
-    @Transactional 
+    @Transactional
     public List<StudentDTO> updateBatchGroupCode(List<StudentGroupDTO> studentGroupDto) {
         // log.info("In updateBatchGroupCode Service Impl:");
         List<Student> studentList = new ArrayList<>();
@@ -283,18 +297,34 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
 
     @Override
     public boolean checkUserName(String userName) {
-        
+
         // log.info("in check username {} " , userName);
         boolean userExistFlag = false;
-        
+
         try {
             userExistFlag = userRepository.existsUserByUserNameIgnoreCase(userName);
-        }catch (Exception e) {
+        } catch (Exception e) {
             // log.error("Exception in checkUserName Service Impl: {} ", e.getMessage());
             e.printStackTrace();
             userExistFlag = false;
         }
         return userExistFlag;
+    }
+
+    @Override
+    public StudentDTO fetchStudentForVerification(String userName) {
+
+        Student student = null;
+
+        try {
+            student = studentRepository.findById(userName)
+                .get();
+        } catch (Exception e) {
+            // log.error("Exception in checkUserName Service Impl: {} ", e.getMessage());
+            e.printStackTrace();
+            student = null;
+        }
+        return getMapper().map(student, StudentDTO.class);
     }
 
 }

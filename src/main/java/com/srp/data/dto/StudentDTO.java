@@ -42,4 +42,5 @@ public class StudentDTO {
 	private Date modifiedDate;
 	private String modifiedBy;
 	private String role;
+	private boolean verified;
 }

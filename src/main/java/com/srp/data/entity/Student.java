@@ -106,6 +106,9 @@ public class Student {
 
 	@Column(name = "role")
 	private String role;
+	
+	@Column(name = "verified")
+	private boolean verified;
 
 	@PrePersist
 	public void prePersist() {
@@ -115,6 +118,7 @@ public class Student {
 		this.isActive = true;
 		this.role = "ROLE_STUDENT";
 		this.yearId = LocalDate.now().getYear();
+		this.verified = false;
 	}
 
 	@PreUpdate

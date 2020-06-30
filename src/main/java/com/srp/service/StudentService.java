@@ -28,4 +28,6 @@ public interface StudentService extends BaseService<StudentDTO, Student, String>
 
     boolean checkUserName(String userName);
 
+    StudentDTO fetchStudentForVerification(String userName);
+
 }
