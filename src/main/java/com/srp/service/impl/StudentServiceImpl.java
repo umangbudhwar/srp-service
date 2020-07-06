@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -60,7 +61,7 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
 
     @Override
     public StudentDTO registerStudent(StudentDTO newUser) {
-        // log.info("In Student service Impl");
+        log.info("In Student service Impl");
 
         Student student = null;
         int firstNameUniqueCount = 0;
@@ -68,8 +69,9 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
             .getYear()) % 100;
 
         try {
-            student = studentRepository.findById(newUser.getUserName()).get();
-            if (student != null) {
+            Optional<Student> studentOptional = studentRepository.findById(newUser.getUserName());
+            if (studentOptional.isPresent()) {
+                student = studentOptional.get();
                 student = getMapper().map(newUser, Student.class);
                 student.setVerified(true);
                 student = studentRepository.save(student);
@@ -94,19 +96,20 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
 
                     student = studentRepository.save(student);
 
-                    // log.info("User saved in Student.");
+                    log.info("User saved in Student.");
 
                     User user = getMapper().map(newUser, User.class);
                     user.setPassword(passwordEncoder.encode(user.getPassword()));
                     user.setRole("ROLE_STUDENT");
                     user = userRepository.save(user);
-                    // log.info("User saved in User table.");
+                    log.info("User saved in User table.");
                 }
             }
 
         } catch (Exception e) {
 
-            // log.error("Exception in Student Service Impl: saveUser(): {} ", e.getMessage());
+            log.error("Exception in Student Service Impl: saveUser(): {} ", e.getMessage());
+            e.printStackTrace();
             student = null;
         }
         return getMapper().map(student, StudentDTO.class);

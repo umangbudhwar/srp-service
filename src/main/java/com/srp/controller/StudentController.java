@@ -30,10 +30,10 @@ public class StudentController {
 
     @PostMapping("/registerStudent")
     public ResponseEntity<StudentDTO> registerStudent(@RequestBody StudentDTO studentDto) {
-        // log.info("Student to be added : {}", studentDto);
+         log.info("Student to be added : {}", studentDto);
 
         studentDto = studentService.registerStudent(studentDto);
-        // log.info("Student added : {}", studentDto);
+         log.info("Student added : {}", studentDto);
         
         if(studentDto != null) {
             return  ResponseEntity.status(HttpStatus.ACCEPTED).body(studentDto);
@@ -138,18 +138,4 @@ public class StudentController {
           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-    /*@PutMapping("/registerStudent")
-    public ResponseEntity<StudentDTO> verifyStudent(@RequestBody StudentDTO studentDto) {
-        // log.info("Student to be added : {}", studentDto);
-    
-        studentDto = studentService.registerStudent(studentDto);
-        // log.info("Student added : {}", studentDto);
-        
-        if(studentDto != null) {
-            return  ResponseEntity.status(HttpStatus.ACCEPTED).body(studentDto);
-          }
-          else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-          }
-    }*/
 }
