@@ -64,7 +64,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/**/fetchYearWiseStudentRecords/**")
             .hasAnyRole("FACULTY", "ADMIN")
             .antMatchers("/**/authenticate", "/**/registerFaculty", "/**/registerStudent", "/**/getSubjects", 
-                "/**/getStreams","/**/findIfUserNameExist/**","/**/findIfFacultyUserNameExist/**","/**fetchStudentForVerification/**")
+                "/**/getStreams","/**/findIfUserNameExist/**","/**/findIfFacultyUserNameExist/**",
+                "/**fetchStudentForVerification/**","/**/addSubjects")
             .permitAll()
             .anyRequest()
             .authenticated()

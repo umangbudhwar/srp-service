@@ -3,6 +3,7 @@ package com.srp.service.impl;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -185,29 +186,71 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
         // return studentDtoList;
     }
 
+    public String setStudentCode(Student studentObj, String groupDivision) {
+
+        Integer yearId = (LocalDate.now()
+            .getYear()) % 100;
+
+        Integer firstNameUniqueCount = 0;
+        String studentCode = null;
+
+        try {
+            firstNameUniqueCount = studentRepository.countByFirstName(studentObj.getFirstName());
+            String studentCodeFirstName = studentObj.getFirstName()
+                .toUpperCase();
+            String studentCodeFatherName = studentObj.getFatherName()
+                .toUpperCase()
+                .replace(" ", "");
+            Long studentCodeCollegeYear = studentObj.getCollegeYear();
+            // String studentCodeGroupDivision = studentObj.getGroupDivision();
+
+            if (firstNameUniqueCount <= 1) {
+
+                // setting student code without Father's name
+                studentObj.setStudentCode(yearId + studentCodeFirstName + studentCodeCollegeYear + groupDivision);
+            } else {
+                // setting student code with Father's name
+                studentObj.setStudentCode(yearId + studentCodeFirstName + studentCodeFatherName + studentCodeCollegeYear + groupDivision);
+            }
+
+            studentCode = studentObj.getStudentCode();
+
+            log.info("Student Code is : " + studentCode);
+
+        } catch (Exception e) {
+            // log.error("Exception in updateGroupCode Service Impl: {} ", e.getMessage());
+            e.printStackTrace();
+        }
+
+        return studentCode;
+    }
+
     @Override
     public StudentDTO updateGroupCode(StudentDTO studentDto) {
         // log.info("In updateGroupCode Service Impl:");
         Student student = null;
-        int firstNameUniqueCount = 0;
-        Integer yearId = (LocalDate.now()
-            .getYear()) % 100;
+
+        /*int firstNameUniqueCount = 0;
+         * Integer yearId = (LocalDate.now()
+            .getYear()) % 100;*/ // today 21 July
         try {
             student = getMapper().map(studentDto, Student.class);
-            firstNameUniqueCount = studentRepository.countByFirstName(studentDto.getFirstName());
+            /* firstNameUniqueCount = studentRepository.countByFirstName(studentDto.getFirstName());
             String studentCodeFirstName = studentDto.getFirstName()
                 .toUpperCase();
             String studentCodeFatherName = studentDto.getFatherName()
                 .toUpperCase();
-
+            
             if (firstNameUniqueCount <= 1) {
-
+            
                 // setting student code without Father's name
                 student.setStudentCode(yearId + studentCodeFirstName + studentDto.getCollegeYear() + studentDto.getGroupDivision());
             } else {
                 // setting student code with Father's name
                 student.setStudentCode(yearId + studentCodeFirstName + studentCodeFatherName + studentDto.getCollegeYear() + studentDto.getGroupDivision());
-            }
+            }*/ // today 21 July
+
+            student.setStudentCode(setStudentCode(student, student.getGroupDivision()));
 
             student = studentRepository.save(student);
 
@@ -247,12 +290,15 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
     public List<StudentDTO> fetchYearWiseStudentRecords(Long year) {
         // log.info("In fetchYearWiseStudentRecords Service Impl:");
         List<Student> studentList = null;
+        // Comparator<Student> compareByFirstName = Comparator.comparing(Student :: getFirstName);
         try {
 
             studentList = studentRepository.findByCollegeYear(year);
-            studentList.stream()
+            studentList = studentList.stream()
                 .filter(student -> student.isVerified())
+                .sorted(Comparator.comparing(Student::getFirstName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
+            // studentList.stream().sorted(Comparator.comparing(Student :: getFirstName));
             // log.info("fetchYearWiseStudentRecords list size {}", studentList.size());
         } catch (Exception e) {
             // log.error("Exception in fetchYearWiseStudentRecords Service Impl: {} ", e.getMessage());
@@ -272,12 +318,24 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentDTO, Student, Str
         String groupDivision = "";
         Student studentObj = null;
         int rowUpdated = 0;
+        String studentCode = null;
+
         try {
             for (StudentGroupDTO student : studentGroupDto) {
                 userName = student.getUserName();
                 groupDivision = student.getGroupNumber();
-                rowUpdated = studentRepository.updateBatchGroupCode(userName, groupDivision);
+
+                Student studentObjTemp = null;
+                studentObjTemp = studentRepository.findById(userName)
+                    .get();
+                // log.info("Before code {}" , studentObjTemp.getStudentCode() );
+                studentObjTemp.setStudentCode(setStudentCode(studentObjTemp, groupDivision));
+                studentCode = studentObjTemp.getStudentCode();
+                rowUpdated = studentRepository.updateBatchGroupCode(userName, groupDivision, studentCode);
+                studentObjTemp = studentRepository.findById(userName)
+                    .get();
                 // log.info("student group updated : {}", rowUpdated);
+
                 if (rowUpdated == 1) {
                     studentObj = studentRepository.findById(userName)
                         .get();

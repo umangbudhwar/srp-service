@@ -1,6 +1,7 @@
 package com.srp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.srp.data.dto.FacultyDTO;
+import com.srp.data.dto.SubjectDTO;
 import com.srp.service.FacultyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,22 +20,52 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Slf4j
 public class FacultyController {
-	
-	@Autowired
-	FacultyService facultyService;
-	
-	@PostMapping("/registerFaculty")
-	public ResponseEntity<FacultyDTO> registerFaculty(@RequestBody FacultyDTO facultyDto) {
-		// log.info("Faculty to be added : {}" , facultyDto);
-		facultyDto = facultyService.registerFaculty(facultyDto);
-		// log.info("Faculty added : {}" , facultyDto);
-		return ResponseEntity.ok(facultyDto);
-	}
-	 @GetMapping("/findIfFacultyUserNameExist/{userName}")
-	    public ResponseEntity<Boolean>findIfFacultyUserNameExist(@PathVariable("userName") String userName){
-	        // log.info("in check user name ()");
-	        boolean result = facultyService.checkUserName(userName);
-	        // log.info("facultyDto {} ", result);
-	        return  ResponseEntity.ok(result);
-	    }
+
+    @Autowired
+    FacultyService facultyService;
+
+    @PostMapping("/registerFaculty")
+    public ResponseEntity<FacultyDTO> registerFaculty(@RequestBody FacultyDTO facultyDto) {
+
+        facultyDto = facultyService.registerFaculty(facultyDto);
+        log.info("Faculty added : {}", facultyDto);
+
+        if (facultyDto != null) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(facultyDto);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(null);
+        }
+    }
+
+    @GetMapping("/findIfFacultyUserNameExist/{userName}")
+    public ResponseEntity<Boolean> findIfFacultyUserNameExist(@PathVariable("userName") String userName) {
+        
+        boolean result = facultyService.checkUserName(userName);
+
+        if (result) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(result);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(null);
+        }
+    }
+
+    @PostMapping("/addSubjects")
+    public ResponseEntity<SubjectDTO> addSubjects(@RequestBody SubjectDTO subjectDto) {
+        
+//        log.info("Subject added : {}", subjectDto);
+        subjectDto = facultyService.addSubjects(subjectDto);
+//        log.info("Subject added : {}", subjectDto);
+
+        if (subjectDto != null) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(subjectDto);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(null);
+        }
+    }
 }

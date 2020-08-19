@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.srp.configuration.jpa.SrpRepository;
 import com.srp.data.dto.FacultyDTO;
+import com.srp.data.dto.SubjectDTO;
 import com.srp.data.entity.Faculty;
+import com.srp.data.entity.Subject;
 import com.srp.data.entity.User;
 import com.srp.data.repository.FacultyRepository;
+import com.srp.data.repository.SubjectRepository;
 import com.srp.data.repository.UserRepository;
 import com.srp.service.FacultyService;
 
@@ -18,76 +21,97 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class FacultyServiceImpl extends BaseServiceImpl<FacultyDTO, Faculty, String> 
-									 implements FacultyService{
+public class FacultyServiceImpl extends BaseServiceImpl<FacultyDTO, Faculty, String> implements FacultyService {
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	
-	@Autowired
-	FacultyRepository facultyRepository;
-	
-	@Autowired
-	UserRepository userRepository;
-	
-	public FacultyServiceImpl(SrpRepository<Faculty, String> repository) {
-		super(repository);
-	}
-	
-	@Override
-	public FacultyDTO registerFaculty(FacultyDTO newUser) {
-		
-		// log.info("In FacultyServiceImpl/saveUser(). ");
-		Faculty faculty = null;
-		
-		try {
-		
-			if(newUser.getAdminOTP() == 123456) {
-				faculty = getMapper().map(newUser, Faculty.class);
-				faculty.setPassword(passwordEncoder.encode(faculty.getPassword()));
-				faculty = facultyRepository.save(faculty);
-				
-				// log.info("User saved in Faculty.");
-				
-				User user = getMapper().map(newUser, User.class);
-				user.setRole("ROLE_FACULTY");
-				user.setPassword(passwordEncoder.encode(user.getPassword()));
-				user = userRepository.save(user);
-				
-				// log.info("User saved in User table.");
-			}
-		}catch (Exception e) {
-			// log.error("Exception in Faculty Service Impl: saveUser(): {} " , e.getMessage());
-		}
-		
-		return getMapper().map(faculty, FacultyDTO.class);
-	}
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-	@Override
-	public Faculty findByUserName(String userName) {
-		// log.info("In Faculty service findByUserName() {}:", userName);
-		Optional<Faculty> r = null;
-		try {
-			r = facultyRepository.findById(userName);
-		}catch (Exception e) {
-			// log.error("Exception in Faculty Service Impl: findByUserName (): {} " , e.getMessage());
-		}
-		return r.get();
-	}
-	 @Override
-	    public boolean checkUserName(String userName) {
-	        
-	        // log.info("in check username {} " , userName);
-	        boolean userExistFlag = false;
-	        
-	        try {
-	            userExistFlag = userRepository.existsUserByUserNameIgnoreCase(userName);
-	        }catch (Exception e) {
-	            // log.error("Exception in checkUserName Service Impl: {} ", e.getMessage());
-	            e.printStackTrace();
-	            userExistFlag = false;
-	        }
-	        return userExistFlag;
-	    }
+    @Autowired
+    FacultyRepository facultyRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    SubjectRepository subjectRepository;
+
+    public FacultyServiceImpl(SrpRepository<Faculty, String> repository) {
+        super(repository);
+    }
+
+    @Override
+    public FacultyDTO registerFaculty(FacultyDTO newUser) {
+
+        // log.info("In FacultyServiceImpl/saveUser(). ");
+        Faculty faculty = null;
+
+        try {
+
+            if (newUser.getAdminOTP() == 123456) {
+                faculty = getMapper().map(newUser, Faculty.class);
+                faculty.setPassword(passwordEncoder.encode(faculty.getPassword()));
+                faculty = facultyRepository.save(faculty);
+
+                // log.info("User saved in Faculty.");
+
+                User user = getMapper().map(newUser, User.class);
+                user.setRole("ROLE_FACULTY");
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+                user = userRepository.save(user);
+
+                // log.info("User saved in User table.");
+            }
+        } catch (Exception e) {
+            // log.error("Exception in Faculty Service Impl: saveUser(): {} " , e.getMessage());
+        }
+
+        return getMapper().map(faculty, FacultyDTO.class);
+    }
+
+    @Override
+    public Faculty findByUserName(String userName) {
+        // log.info("In Faculty service findByUserName() {}:", userName);
+        Optional<Faculty> r = null;
+        try {
+            r = facultyRepository.findById(userName);
+        } catch (Exception e) {
+            // log.error("Exception in Faculty Service Impl: findByUserName (): {} " , e.getMessage());
+        }
+        return r.get();
+    }
+
+    @Override
+    public boolean checkUserName(String userName) {
+
+        // log.info("in check username {} " , userName);
+        boolean userExistFlag = false;
+
+        try {
+            userExistFlag = userRepository.existsUserByUserNameIgnoreCase(userName);
+        } catch (Exception e) {
+            // log.error("Exception in checkUserName Service Impl: {} ", e.getMessage());
+            e.printStackTrace();
+            userExistFlag = false;
+        }
+        return userExistFlag;
+    }
+
+    @Override
+    public SubjectDTO addSubjects(SubjectDTO subjectDto) {
+        Subject addSubject = new Subject();
+       // log.info("in addSubjects services",subjectDto);
+        try {
+            addSubject = getMapper().map(subjectDto, Subject.class);
+            addSubject = subjectRepository.save(addSubject);
+
+            log.info("Subject Saved. ");
+        } catch (Exception e) {
+
+            log.error("Exception in Faculty Service Impl: addSubjects(): {} ", e.getMessage());
+            e.printStackTrace();
+            addSubject = null;
+        }
+        return getMapper().map(addSubject, SubjectDTO.class);
+    }
 
 }
